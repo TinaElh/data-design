@@ -98,9 +98,10 @@ function preload() {
 }
 
 function setup() {
-  console.log(categories);
-  console.log(data);
-  createCanvas(1000, 1000);
+  // console.log(categories);
+  // console.log(data);
+  createCanvas(500, 500);
+  background("#000000");
 
   for (let i = 0; i < data.getRowCount(); i++) {
     let video = data.rows[i].arr;
@@ -115,11 +116,14 @@ function setup() {
   sortable.sort((a, b) => b[1] - a[1]);
 
   for (let i = 0; i < 5; i++) {
-      getCircles(categories[sortable[i][0]].videos, width-i*200, height-i*200);
+      container = createGraphics(2000/(i+1), 2000/(i+1));
+      container.background("#F6F4EE");
+      getCircles(categories[sortable[i][0]].videos, 2000/(i+1), 2000/(i+1), container);
+      image(container, 0, i*100, 500-i*100, 500-i*100);
   }
 }
 
-function getCircles(videos, width, height) {
+function getCircles(videos, width, height, container) {
   let circles = [];
 
   videos.forEach((video) => {
@@ -130,7 +134,7 @@ function getCircles(videos, width, height) {
       circle = {
         x: random(width),
         y: random(height),
-        r: (video[8] + 1) / 5000000, // nb views
+        r: log((video[8] + 1)/100000)*5, // nb views
         color: categories[video[5]].color, // category
       };
 
@@ -148,7 +152,7 @@ function getCircles(videos, width, height) {
       }
       
       protection++;
-      if (protection > 500) {
+      if (protection > 1000) {
         break;
       }
     } while (overlapping);
@@ -157,14 +161,14 @@ function getCircles(videos, width, height) {
 
   });
   
-  drawCircles(circles);
+  drawCircles(circles, container);
 }
 
-function drawCircles(circles) {
+function drawCircles(circles, container) {
   for (let i = 0; i < circles.length; i++) {
-    fill(circles[i].color); // color = category
-    noStroke();
-    circle(circles[i].x, circles[i].y, circles[i].r * 2);
+    container.fill(circles[i].color); // color = category
+    container.noStroke();
+    container.circle(circles[i].x, circles[i].y, circles[i].r * 2);
   }
 }
 
